@@ -1,8 +1,20 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Wallet, Send, Clock, AlertCircle, Droplets } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import MiningInterface from "./MiningInterface";
@@ -20,7 +32,7 @@ const FaucetForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!walletAddress || !selectedNetwork) {
       toast({
         title: "Missing Information",
@@ -31,7 +43,7 @@ const FaucetForm = () => {
     }
 
     setIsLoading(true);
-    
+
     // Simulate starting mining process
     setTimeout(() => {
       setIsLoading(false);
@@ -54,7 +66,12 @@ const FaucetForm = () => {
   };
 
   if (currentState === "mining") {
-    return <MiningInterface walletAddress={walletAddress} onStopMining={handleStopMining} />;
+    return (
+      <MiningInterface
+        walletAddress={walletAddress}
+        onStopMining={handleStopMining}
+      />
+    );
   }
 
   if (currentState === "claim") {
@@ -75,16 +92,20 @@ const FaucetForm = () => {
           <div className="mx-auto p-3 w-fit rounded-full bg-primary/10 border border-primary/20 animate-glow-pulse">
             <Droplets className="h-8 w-8 text-primary" />
           </div>
-          <CardTitle className="text-2xl gradient-text">Get Testnet Tokens</CardTitle>
+          <CardTitle className="text-2xl gradient-text">
+            Get Testnet Tokens
+          </CardTitle>
           <CardDescription className="text-muted-foreground">
             Receive free testnet tokens for development and testing purposes
           </CardDescription>
         </CardHeader>
-        
+
         <CardContent className="space-y-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">Wallet Address</label>
+              <label className="text-sm font-medium text-foreground">
+                Wallet Address
+              </label>
               <div className="relative">
                 <Wallet className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -98,16 +119,18 @@ const FaucetForm = () => {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">Network</label>
-              <Select value={selectedNetwork} onValueChange={setSelectedNetwork}>
+              <label className="text-sm font-medium text-foreground">
+                Network
+              </label>
+              <Select
+                value={selectedNetwork}
+                onValueChange={setSelectedNetwork}
+              >
                 <SelectTrigger className="bg-input border-input-border focus:border-primary">
                   <SelectValue placeholder="Select a testnet" />
                 </SelectTrigger>
                 <SelectContent className="bg-card border-card-border">
                   <SelectItem value="sepolia">Sepolia Testnet</SelectItem>
-                  <SelectItem value="goerli">Goerli Testnet</SelectItem>
-                  <SelectItem value="mumbai">Mumbai Testnet</SelectItem>
-                  <SelectItem value="fuji">Fuji Testnet</SelectItem>
                 </SelectContent>
               </Select>
             </div>
