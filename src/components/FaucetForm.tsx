@@ -5,11 +5,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Wallet, Send, Clock, AlertCircle, Droplets } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import MiningInterface from "./MiningInterface";
+import ClaimModal from "./ClaimModal";
+
+type AppState = "form" | "mining" | "claim";
 
 const FaucetForm = () => {
   const [walletAddress, setWalletAddress] = useState("");
   const [selectedNetwork, setSelectedNetwork] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [currentState, setCurrentState] = useState<AppState>("form");
+  const [miningReward, setMiningReward] = useState(0.06);
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -26,16 +32,41 @@ const FaucetForm = () => {
 
     setIsLoading(true);
     
-    // Simulate API call
+    // Simulate starting mining process
     setTimeout(() => {
-      toast({
-        title: "Tokens Sent!",
-        description: `Successfully sent testnet tokens to ${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`,
-      });
       setIsLoading(false);
-      setWalletAddress("");
+      setCurrentState("mining");
     }, 2000);
   };
+
+  const handleStopMining = () => {
+    setCurrentState("claim");
+  };
+
+  const handleClaim = () => {
+    setCurrentState("form");
+    setWalletAddress("");
+    setSelectedNetwork("");
+  };
+
+  const handleCloseModal = () => {
+    setCurrentState("mining");
+  };
+
+  if (currentState === "mining") {
+    return <MiningInterface walletAddress={walletAddress} onStopMining={handleStopMining} />;
+  }
+
+  if (currentState === "claim") {
+    return (
+      <ClaimModal
+        walletAddress={walletAddress}
+        miningReward={miningReward}
+        onClaim={handleClaim}
+        onClose={handleCloseModal}
+      />
+    );
+  }
 
   return (
     <div className="w-full max-w-2xl mx-auto space-y-6">
@@ -89,7 +120,7 @@ const FaucetForm = () => {
               {isLoading ? (
                 <>
                   <Clock className="mr-2 h-4 w-4 animate-spin" />
-                  Sending Tokens...
+                  Starting Mining...
                 </>
               ) : (
                 <>
